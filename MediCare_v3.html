@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dr. Maira Chughtai - Online Consultations</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@preline/preline@2.0.0/dist/preline.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Improved mobile touch interactions */
+        button, .clickable {
+            min-height: 48px;
+            min-width: 48px;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .doctor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .appointment-card {
+            transition: all 0.3s ease;
+        }
+        .appointment-card:hover {
+            background-color: #f0f7ff;
+        }
+        #bookingSection {
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+            transition: opacity 0.5s ease, height 0.5s ease;
+        }
+        #bookingSection.show {
+            opacity: 1;
+            height: auto;
+        }
+        .error-border {
+            border-color: #ef4444 !important;
+        }
+        .error-message {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+        
+        /* Active state for buttons */
+        .time-slot-btn:active, .time-slot-btn.active {
+            background-color: #ebf4ff;
+            border-color: #3b82f6;
+        }
+        
+        /* Prevent zoom on input focus */
+        input, select, textarea {
+            font-size: 16px;
+        }
+        
+        /* Logo styling */
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .logo-main {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        .logo-byline {
+            font-size: 0.875rem;
+            margin-top: -0.25rem;
+            margin-left: 1.75rem;
+            color: #4b5563;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <div class="logo-container">
+                            <div class="logo-main">
+                                <i class="fas fa-heartbeat text-blue-600 text-2xl mr-2"></i>
+                                <span>MediCare</span>
+                            </div>
+                            <div class="logo-byline">by Dr. Maira Chughtai</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hidden sm:ml-6 sm:flex sm:items-center space-x-8">
+                    <a href="#" class="text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 border-blue-500 text-sm font-medium">Home</a>
+                    <a href="#about" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 border-transparent hover:border-gray-300 text-sm font-medium">About</a>
+                    <a href="#appointments" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 border-transparent hover:border-gray-300 text-sm font-medium">My Appointments</a>
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium">Sign In</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="bg-blue-600 text-white">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl mb-4">
+                    Expert Medical Care from Dr. Maira Chughtai
+                </h1>
+                <p class="text-xl text-blue-100 max-w-3xl mx-auto">
+                    Book online consultations with an experienced general physician. Virtual appointments available via Zoom.
+                </p>
+                <div class="mt-8">
+                    <button id="bookAppointmentBtn" class="bg-white text-blue-600 px-6 py-3 rounded-md text-lg font-medium hover:bg-blue-50 active:bg-blue-100 transition-colors">
+                        Book an Appointment
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Doctor Profile Section -->
+    <div id="about" class="py-12 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="lg:grid lg:grid-cols-3 lg:gap-8">
+                <div class="lg:col-span-2">
+                    <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+                        About Dr. Maira Chughtai
+                    </h2>
+                    <div class="mt-6 text-gray-600 space-y-4">
+                        <p>
+                            With over 35 years of experience in general medicine, Dr. Maira Chughtai provides comprehensive healthcare services to patients of all ages. Her patient-centered approach focuses on preventive care and evidence-based treatment.
+                        </p>
+                        <p>
+                            Dr. Chughtai completed her medical degree from King Edward Medical University and has been practicing since 1988. She has special interests in chronic disease management, women's health, and geriatric care.
+                        </p>
+                        <p>
+                            Now offering convenient virtual consultations through Zoom, Dr. Chughtai brings her expertise directly to your home.
+                        </p>
+                    </div>
+                    
+                    <div class="mt-8">
+                        <h3 class="text-xl font-semibold text-gray-900">Services Offered:</h3>
+                        <ul class="mt-4 space-y-2 text-gray-600">
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                                <span>General health consultations</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                                <span>Chronic disease management (diabetes, hypertension, etc.)</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                                <span>Preventive health screenings</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                                <span>Medication management</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                                <span>Second opinions</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="mt-12 lg:mt-0">
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-sm">
+                        <h3 class="text-lg font-medium text-gray-900">Credentials</h3>
+                        <div class="mt-4 space-y-4">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">Specialty</p>
+                                <p class="mt-1 text-gray-900">General Physician</p>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">Experience</p>
+                                <p class="mt-1 text-gray-900">35+ years</p>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">Education</p>
+                                <p class="mt-1 text-gray-900">MBBS - King Edward Medical University</p>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">Languages</p>
+                                <p class="mt-1 text-gray-900">English, Urdu, Punjabi</p>
+                            </div>
+                        </div>
+                        <div class="mt-6">
+                            <div class="flex items-center text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span class="ml-2 text-gray-600">4.7 (320 reviews)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Section -->
+    <div id="bookingSection" class="py-12 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+                    Book an Appointment
+                </h2>
+                <p class="mt-4 text-xl text-gray-500">
+                    Virtual consultations available Monday to Saturday
+                </p>
+            </div>
+
+            <div class="mt-12 max-w-3xl mx-auto">
+                <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+                    <div class="px-4 py-5 sm:px-6 bg-gray-50">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">
+                            Available Time Slots
+                        </h3>
+                        <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                            Select a time slot for your consultation
+                        </p>
+                    </div>
+                    <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
+                        <div class="py-4 sm:py-5 sm:grid sm:grid-cols-7 sm:gap-4 sm:px-6">
+                            <div class="text-sm font-medium text-gray-500">
+                                Monday - Friday
+                            </div>
+                            <div class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-6">
+                                <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                    <button data-time="9:00 AM" class="time-slot-btn py-3 px-4 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-blue-50 hover:border-blue-300 active:bg-blue-100">
+                                        9:00 AM
+                                    </button>
+                                    <button data-time="11:00 AM" class="time-slot-btn py-3 px-4 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-blue-50 hover:border-blue-300 active:bg-blue-100">
+                                        11:00 AM
+                                    </button>
+                                    <button data-time="2:00 PM" class="time-slot-btn py-3 px-4 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-blue-50 hover:border-blue-300 active:bg-blue-100">
+                                        2:00 PM
+                                    </button>
+                                    <button data-time="4:00 PM" class="time-slot-btn py-3 px-4 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-blue-50 hover:border-blue-300 active:bg-blue-100">
+                                        4:00 PM
+                                    </button>
+                                    <button data-time="5:30 PM" class="time-slot-btn py-3 px-4 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-blue-50 hover:border-blue-300 active:bg-blue-100">
+                                        5:30 PM
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="py-4 sm:py-5 sm:grid sm:grid-cols-7 sm:gap-4 sm:px-6 border-t border-gray-200">
+                            <div class="text-sm font-medium text-gray-500">
+                                Saturday
+                            </div>
+                            <div class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-6">
+                                <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                    <button data-time="10:00 AM" class="time-slot-btn py-3 px-4 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-blue-50 hover:border-blue-300 active:bg-blue-100">
+                                        10:00 AM
+                                    </button>
+                                    <button data-time="12:00 PM" class="time-slot-btn py-3 px-4 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-blue-50 hover:border-blue-300 active:bg-blue-100">
+                                        12:00 PM
+                                    </button>
+                                    <button data-time="3:00 PM" class="time-slot-btn py-3 px-4 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-blue-50 hover:border-blue-300 active:bg-blue-100">
+                                        3:00 PM
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 bg-white shadow overflow-hidden sm:rounded-lg">
+                    <div class="px-4 py-5 sm:px-6 bg-gray-50">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">
+                            Appointment Details
+                        </h3>
+                    </div>
+                    <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
+                        <form id="appointmentForm" class="space-y-6 px-4 py-5 sm:px-6">
+                            <div>
+                                <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
+                                <input type="date" id="date" name="date" min="" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                <p id="date-error" class="error-message">Please select a date</p>
+                            </div>
+                            
+                            <div>
+                                <label for="time" class="block text-sm font-medium text-gray-700">Selected Time</label>
+                                <input type="text" id="time" name="time" readonly class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 bg-gray-50 sm:text-sm">
+                                <p id="time-error" class="error-message">Please select a time slot</p>
+                            </div>
+                            
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                                <input type="text" id="name" name="name" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                <p id="name-error" class="error-message">Please enter your name</p>
+                            </div>
+                            
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                                <input type="email" id="email" name="email" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                <p id="email-error" class="error-message">Please enter a valid email</p>
+                            </div>
+                            
+                            <div>
+                                <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                                <input type="tel" id="phone" name="phone" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                <p id="phone-error" class="error-message">Please enter your phone number</p>
+                            </div>
+                            
+                            <div>
+                                <label for="reason" class="block text-sm font-medium text-gray-700">Reason for Visit</label>
+                                <textarea id="reason" name="reason" rows="3" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
+                                <p id="reason-error" class="error-message">Please describe your reason for visit</p>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <input id="terms" name="terms" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                <label for="terms" class="ml-2 block text-sm text-gray-700">
+                                    I agree to the <a href="#" class="text-blue-600 hover:text-blue-500">terms and conditions</a>
+                                </label>
+                                <p id="terms-error" class="error-message ml-2">Please agree to the terms</p>
+                            </div>
+                            
+                            <div class="pt-4">
+                                <button type="button" id="whatsappBtn" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-md font-medium flex items-center justify-center active:bg-green-800">
+                                    <i class="fab fa-whatsapp mr-2 text-xl"></i> Continue on WhatsApp ($50)
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set minimum date to today
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').min = today;
+
+            // Initialize event listeners with proper touch support
+            initEventListeners();
+        });
+
+        function initEventListeners() {
+            // Book appointment button - works for both click and touch
+            const bookBtn = document.getElementById('bookAppointmentBtn');
+            
+            // Standard click event
+            bookBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                toggleBookingSection();
+            });
+            
+            // Touch event for mobile
+            bookBtn.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                toggleBookingSection();
+            }, { passive: false });
+
+            // Time slot buttons
+            document.querySelectorAll('.time-slot-btn').forEach(btn => {
+                // Click event
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    selectTimeSlot(this.getAttribute('data-time'));
+                });
+                
+                // Touch event
+                btn.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    selectTimeSlot(this.getAttribute('data-time'));
+                }, { passive: false });
+            });
+
+            // WhatsApp button
+            const whatsappBtn = document.getElementById('whatsappBtn');
+            
+            // Click event
+            whatsappBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                sendAppointmentViaWhatsApp();
+            });
+            
+            // Touch event
+            whatsappBtn.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                sendAppointmentViaWhatsApp();
+            }, { passive: false });
+
+            // Input error clearing
+            document.querySelectorAll('input, textarea').forEach(input => {
+                input.addEventListener('input', function() {
+                    this.classList.remove('error-border');
+                    const errorId = this.id + '-error';
+                    if (document.getElementById(errorId)) {
+                        document.getElementById(errorId).style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // Toggle booking section with smooth scroll
+        function toggleBookingSection() {
+            const bookingSection = document.getElementById('bookingSection');
+            bookingSection.classList.toggle('show');
+            
+            if (bookingSection.classList.contains('show')) {
+                setTimeout(() => {
+                    bookingSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }, 50);
+            }
+        }
+
+        // Time slot selection
+        function selectTimeSlot(time) {
+            document.getElementById('time').value = time;
+            document.getElementById('time-error').style.display = 'none';
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.time-slot-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-blue-100', 'border-blue-500');
+            });
+            
+            // Add active class to clicked button
+            if (event.target) {
+                event.target.classList.add('active', 'bg-blue-100', 'border-blue-500');
+            }
+        }
+
+        // WhatsApp booking function
+        function sendAppointmentViaWhatsApp() {
+            // Reset errors
+            document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('input, textarea').forEach(el => el.classList.remove('error-border'));
+            
+            // Get form data
+            const formData = {
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                date: document.getElementById('date').value,
+                time: document.getElementById('time').value,
+                reason: document.getElementById('reason').value.trim(),
+                terms: document.getElementById('terms').checked
+            };
+
+            // Validate form
+            let isValid = true;
+
+            if (!formData.name) {
+                document.getElementById('name').classList.add('error-border');
+                document.getElementById('name-error').style.display = 'block';
+                isValid = false;
+            }
+
+            if (!formData.email || !/^\S+@\S+\.\S+$/.test(formData.email)) {
+                document.getElementById('email').classList.add('error-border');
+                document.getElementById('email-error').style.display = 'block';
+                isValid = false;
+            }
+
+            if (!formData.phone) {
+                document.getElementById('phone').classList.add('error-border');
+                document.getElementById('phone-error').style.display = 'block';
+                isValid = false;
+            }
+
+            if (!formData.date) {
+                document.getElementById('date').classList.add('error-border');
+                document.getElementById('date-error').style.display = 'block';
+                isValid = false;
+            }
+
+            if (!formData.time) {
+                document.getElementById('time-error').style.display = 'block';
+                isValid = false;
+            }
+
+            if (!formData.reason) {
+                document.getElementById('reason').classList.add('error-border');
+                document.getElementById('reason-error').style.display = 'block';
+                isValid = false;
+            }
+
+            if (!formData.terms) {
+                document.getElementById('terms-error').style.display = 'block';
+                isValid = false;
+            }
+
+            if (!isValid) return;
+
+            // Format WhatsApp message
+            const message = `*New Appointment Request*%0A%0A
+*Patient Name:* ${encodeURIComponent(formData.name)}%0A
+*Contact Number:* ${encodeURIComponent(formData.phone)}%0A
+*Email:* ${encodeURIComponent(formData.email)}%0A
+*Appointment Date:* ${encodeURIComponent(formData.date)}%0A
+*Appointment Time:* ${encodeURIComponent(formData.time)}%0A
+*Reason for Visit:* ${encodeURIComponent(formData.reason)}%0A%0A
+Please confirm this appointment and provide payment details.`;
+
+            const whatsappNumber = "923219483021";
+            
+            // Open WhatsApp
+            window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
+        }
+    </script>
+</body>
+</html>
